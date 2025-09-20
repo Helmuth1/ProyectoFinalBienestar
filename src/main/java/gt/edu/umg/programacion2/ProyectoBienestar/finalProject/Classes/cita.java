@@ -5,6 +5,11 @@
 
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,8 +23,8 @@ public class cita {
     private String estado;
 
     @ManyToOne
-    private Cliente cliente;
+    private cliente cliente;
 
     @ManyToOne
-    private Servicio servicio;
+    private servicio servicio;
 }

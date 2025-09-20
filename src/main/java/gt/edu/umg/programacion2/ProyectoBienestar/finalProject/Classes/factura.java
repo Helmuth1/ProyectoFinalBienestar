@@ -5,6 +5,11 @@
 
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,8 +22,8 @@ public class factura {
     private Double monto;
 
     @ManyToOne
-    private Cliente cliente;
+    private cliente cliente;
 
     @OneToOne
-    private Cita cita;
+    private cita cita;
 }
