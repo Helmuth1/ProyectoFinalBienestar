@@ -7,16 +7,15 @@ package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository;
 
 
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.cliente;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public interface IClienteRepository {
-     cliente save(cliente cliente);
-     cliente findById(Long id);
-     List<cliente> findAll();
-     void delete(Long id);
+public interface IClienteRepository extends JpaRepository<cliente, Long> {
+
+    Optional<cliente> findByEmail(String email);
+
+    // Si la creaste en el paso anterior, esta debe existir:
+    Optional<cliente> findByNit(String nit);
 }
 

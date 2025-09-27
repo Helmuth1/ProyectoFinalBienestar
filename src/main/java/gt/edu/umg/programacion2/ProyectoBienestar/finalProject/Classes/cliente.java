@@ -6,26 +6,35 @@
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "clientes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class cliente {
-    @Id
+    
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idCliente;
-    private String nombre;
+    private Long id; // ID de cliente
+
+    @Column(nullable = false, unique = true) 
+    private String nit; // Por ejemplo, un campo único para el cliente
+
+    @Column(nullable = false)
+    private String nombreCompleto;
+    
     private String email;
     private String telefono;
 
-    public Long getId() { return idCliente; }
-    public String getNombre() { return nombre; }
-    public String getEmail() { return email; }
-    public String telefono() { return telefono; }
+    public cliente(String nit, String nombreCompleto, String email, String telefono) {
+        this.nit = nit;
+        this.nombreCompleto = nombreCompleto;
+        this.email = email;
+        this.telefono = telefono;
+    }
 
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setEmail(String email) { this.email = email; }
-    public String getTelefono() { return telefono; }
 }

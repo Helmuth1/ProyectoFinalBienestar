@@ -6,11 +6,14 @@
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Controller;
 
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.cliente;
-import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository.IClienteRepository;
-import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository.InMemoryClienteRepository;
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Service.ClienteService;
-import org.springframework.http.*;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Map;
+
 
 import java.util.List;
 import java.util.Map;
@@ -19,42 +22,48 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
+
+    // 1. Inyección de dependencia (La forma correcta en Spring)
     private final ClienteService service;
 
-    public ClienteController() {
-        IClienteRepository repo = new InMemoryClienteRepository();
-        this.service = new ClienteService(repo);
+    // 2. Constructor para Inyección (Spring lo hace automáticamente con @Autowired o final)
+    public ClienteController(ClienteService service) {
+        this.service = service;
     }
 
-    // ==== POST: Crear ====
+    // --- POST: Crear un nuevo cliente (Corregido) ---
     @PostMapping
-    public ResponseEntity<cliente> create(@RequestBody Map<String, Object> body) {
-        String nombre = String.valueOf(body.get("nombre"));
-        String email = String.valueOf(body.get("email"));
-        String telefono = String.valueOf(body.get("telefono"));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(service.crear(nombre, email, telefono));
+    public ResponseEntity<cliente> crearCliente(@Valid @RequestBody cliente nuevoCliente) {
+        // 3. Llamada correcta: Usar la instancia 'service', no la clase 'ClienteService'
+        cliente clienteGuardado = service.guardarCliente(nuevoCliente);
+
+        return new ResponseEntity<>(clienteGuardado, HttpStatus.CREATED);
     }
 
     // ==== GET: Listar todos ====
     @GetMapping
     public List<cliente> listAll() {
-        return service.listar();
+        return service.listar(); // O service.obtenerTodos() si lo refactorizaste
     }
 
     // ==== GET: Obtener uno ====
     @GetMapping("/{id}")
     public ResponseEntity<cliente> get(@PathVariable Long id) {
+        // El servicio ya maneja la excepción si no lo encuentra.
         return ResponseEntity.ok(service.obtener(id));
     }
 
-    // ==== PUT: Actualizar ====
+    // ==== PUT: Actualizar (CORREGIDO Y OPTIMIZADO PARA POJOS) ====
     @PutMapping("/{id}")
     public ResponseEntity<cliente> update(@PathVariable Long id,
-                                          @RequestBody Map<String, Object> body) {
-        String nombre = String.valueOf(body.get("nombre"));
-        String email = String.valueOf(body.get("email"));
-        return ResponseEntity.ok(service.actualizar(id, nombre, email));
+                                          @Valid @RequestBody cliente clienteActualizado) {
+
+        // 4. Llamada al servicio con el objeto Cliente (Mejor Práctica)
+        // **NOTA:** Asumo que actualizaste el método 'actualizar' en ClienteService
+        // para que acepte el objeto Cliente en lugar de campos individuales.
+        cliente actualizado = service.actualizar(id, clienteActualizado);
+
+        return ResponseEntity.ok(actualizado);
     }
 
     // ==== DELETE: Eliminar ====

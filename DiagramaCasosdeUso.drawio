@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" version="28.2.1">
+  <diagram name="Casos de Uso" id="0">
+    <mxGraphModel dx="1889" dy="753" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="actorCliente" value="" style="shape=umlActor;" parent="1" vertex="1">
+          <mxGeometry x="20" y="100" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="actorAdmin" value="" style="shape=umlActor;" parent="1" vertex="1">
+          <mxGeometry x="20" y="300" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="actorNotif" value="" style="shape=umlActor;" parent="1" vertex="1">
+          <mxGeometry x="20" y="500" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ucAgendar" value="Agendar Cita" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="250" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucCancelar" value="Cancelar Cita" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="250" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucHistorial" value="Consultar Historial" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="240" y="260" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucRegistrar" value="Registrar Cliente" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="240" y="340" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucServicios" value="Gestionar Servicios" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="240" y="420" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucFactura" value="Emitir Factura" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="250" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucReportes" value="Generar Reportes" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="240" y="590" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ucNotif" value="Enviar Notificación" style="ellipse;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="230" y="690" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge1" parent="1" source="actorCliente" target="ucAgendar" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" parent="1" source="actorCliente" target="ucCancelar" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3" parent="1" source="actorCliente" target="ucHistorial" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4" parent="1" source="actorAdmin" target="ucRegistrar" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge5" parent="1" source="actorAdmin" target="ucServicios" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge6" parent="1" source="actorAdmin" target="ucFactura" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge7" parent="1" source="actorAdmin" target="ucReportes" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge8" parent="1" source="actorNotif" target="ucNotif" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eLJpgYx04LgbZ9e10Lfl-2" value="Cliente" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="10" y="180" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eLJpgYx04LgbZ9e10Lfl-3" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; background-color: rgb(236, 236, 236); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;Recepcionista/Admin&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="270" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eLJpgYx04LgbZ9e10Lfl-7" value="Sistema de Notificaciones" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-40" y="578" width="160" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
