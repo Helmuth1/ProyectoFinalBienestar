@@ -6,8 +6,11 @@
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Service;
 
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.cliente;
+import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Event.ClienteCreadoEvent;
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository.IClienteRepository; // Usaremos esta como la interfaz de JpaRepository
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,17 +26,43 @@ public class ClienteService {
     // 1. Uso de la interfaz (IClienteRepository) en lugar de la clase de implementación
     private final IClienteRepository repo;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     @Autowired
-    public ClienteService(IClienteRepository repo) { // <-- Se inyecta la interfaz
+    public ClienteService(IClienteRepository repo, ApplicationEventPublisher eventPublisher) { // <-- Se inyecta la interfaz
         this.repo = repo;
+        this.eventPublisher = eventPublisher;
     }
 
-    // --- MÉTODOS CRUD BÁSICOS (Corregidos de los errores iniciales) ---
 
-    // Método para crear/actualizar un cliente
+
     public cliente guardarCliente(cliente cliente1) {
-        // 2. Uso correcto de la variable de instancia 'repo' y no la clase 'ClienteRepository'
-        return repo.save(cliente1);
+
+        // Determinar la acción para el log (asumiendo que si tiene ID es UPDATE)
+        String accion = (cliente1.getId() == null) ? "CREADO" : "ACTUALIZADO";
+
+        // 1. Guardar o actualizar el cliente en la base de datos
+        cliente clienteGuardado = repo.save(cliente1);
+
+        // 2. Obtener el nombre del usuario autenticado (Placeholder de Seguridad)
+        String usuarioActual;
+        try {
+            // Esto solo funciona si ya tienes Spring Security configurado y el usuario logueado
+            usuarioActual = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e) {
+            // Fallback si no hay contexto de seguridad (ej: pruebas o primera vez)
+            usuarioActual = "SYSTEM";
+        }
+
+        // 3. Publicar el evento de auditoría
+        ClienteCreadoEvent evento = new ClienteCreadoEvent(
+                this, // Fuente del evento
+                clienteGuardado,
+                accion
+        );
+        eventPublisher.publishEvent(evento);
+
+        return clienteGuardado;
     }
 
     // Método para obtener todos
@@ -82,9 +111,6 @@ public class ClienteService {
 
         // 2. Actualización de campos
         // Se actualizan los campos con los valores del objeto clienteActualizado
-
-        // **Nota:** Si el NIT debe ser inmutable, puedes omitir esta línea
-        // o incluir lógica de validación extra.
         clienteExistente.setNit(clienteActualizado.getNit());
 
         clienteExistente.setNombreCompleto(clienteActualizado.getNombreCompleto());
