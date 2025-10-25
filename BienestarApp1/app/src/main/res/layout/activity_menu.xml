@@ -1,0 +1,13 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical" android:padding="24dp"
+        android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <Button android:id="@+id/btnPerfil" android:text="Perfil" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <Button android:id="@+id/btnServicios" android:text="Servicios" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+        <Button android:id="@+id/btnReservar" android:text="Reservar Cita" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+        <Button android:id="@+id/btnHistorial" android:text="Historial" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+        <Button android:id="@+id/btnFacturas" android:text="Facturas" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</ScrollView>
