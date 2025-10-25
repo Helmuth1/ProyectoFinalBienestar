@@ -1,0 +1,48 @@
+.contenedor-facturas {
+  padding: 20px;
+  text-align: center;
+}
+
+.titulo {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+.filtros {
+  margin-bottom: 15px;
+}
+
+input, button {
+  margin: 5px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.tabla-facturas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.btn-cobrar {
+  background-color: #2e8b57;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.btn-cobrar:hover {
+  background-color: #1e6b47;
+}

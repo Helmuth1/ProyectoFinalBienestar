@@ -5,7 +5,7 @@
 
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Event;
 
-import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.cliente;
+import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.Cliente;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 /**
@@ -15,10 +15,10 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class ClienteCreadoEvent extends ApplicationEvent {
 
-    private final cliente cliente;
+    private final Cliente cliente;
     private final String accion; // "CREADO", "ACTUALIZADO", "ELIMINADO"
 
-    public ClienteCreadoEvent(Object source, cliente cliente, String accion ) {
+    public ClienteCreadoEvent(Object source, Cliente cliente, String accion ) {
         super(source); // Esto es obligatorio al extender ApplicationEvent
         this.cliente = cliente;
         this.accion = accion;

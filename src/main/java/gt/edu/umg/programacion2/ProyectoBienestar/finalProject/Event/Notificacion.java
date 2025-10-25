@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.Async;
  * @author helmu
  */
 public class Notificacion {
-    @Async // 👈 Para que la notificación no bloquee el servicio
+    @Async // Notificación no bloquee el servicio
     @EventListener
     public void manejarEventoCliente(ClienteCreadoEvent event) {
         // Lógica para enviar email, registrar en DB de auditoría, etc.

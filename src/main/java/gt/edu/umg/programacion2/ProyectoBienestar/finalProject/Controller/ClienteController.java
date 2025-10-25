@@ -5,11 +5,15 @@
 
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Controller;
 
-import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.cliente;
+import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.Cliente;
+import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository.ClienteRepository;
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Service.ClienteService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -23,53 +27,72 @@ import java.util.Map;
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
-    // 1. Inyección de dependencia (La forma correcta en Spring)
+    private ClienteRepository clienteRepository;
     private final ClienteService service;
 
-    // 2. Constructor para Inyección (Spring lo hace automáticamente con @Autowired o final)
+    @Autowired
+    private ClienteService clienteService;
+
     public ClienteController(ClienteService service) {
         this.service = service;
     }
 
-    // --- POST: Crear un nuevo cliente (Corregido) ---
     @PostMapping
-    public ResponseEntity<cliente> crearCliente(@Valid @RequestBody cliente nuevoCliente) {
-        // 3. Llamada correcta: Usar la instancia 'service', no la clase 'ClienteService'
-        cliente clienteGuardado = service.guardarCliente(nuevoCliente);
+    public ResponseEntity<Cliente> crearCliente(@Valid @RequestBody Cliente nuevoCliente) {
+
+        Cliente clienteGuardado = service.guardarCliente(nuevoCliente);
 
         return new ResponseEntity<>(clienteGuardado, HttpStatus.CREATED);
     }
 
-    // ==== GET: Listar todos ====
     @GetMapping
-    public List<cliente> listAll() {
+    public List<Cliente> listAll() {
         return service.listar(); // O service.obtenerTodos() si lo refactorizaste
     }
 
-    // ==== GET: Obtener uno ====
     @GetMapping("/{id}")
-    public ResponseEntity<cliente> get(@PathVariable Long id) {
-        // El servicio ya maneja la excepción si no lo encuentra.
+    public ResponseEntity<Cliente> get(@PathVariable Long id) {
         return ResponseEntity.ok(service.obtener(id));
     }
 
-    // ==== PUT: Actualizar (CORREGIDO Y OPTIMIZADO PARA POJOS) ====
     @PutMapping("/{id}")
-    public ResponseEntity<cliente> update(@PathVariable Long id,
-                                          @Valid @RequestBody cliente clienteActualizado) {
+    public ResponseEntity<?> actualizarCliente(
+            @PathVariable Long id,
+            @RequestBody Cliente clienteActualizado) {
 
-        // 4. Llamada al servicio con el objeto Cliente (Mejor Práctica)
-        // **NOTA:** Asumo que actualizaste el método 'actualizar' en ClienteService
-        // para que acepte el objeto Cliente en lugar de campos individuales.
-        cliente actualizado = service.actualizar(id, clienteActualizado);
+        Cliente clienteExistente = clienteService.obtener(id);
+        clienteExistente.setNombreCompleto(clienteActualizado.getNombreCompleto());
+        clienteExistente.setEmail(clienteActualizado.getEmail());
+        clienteExistente.setTelefono(clienteActualizado.getTelefono());
+        clienteExistente.setNit(clienteActualizado.getNit());
 
+        Cliente actualizado = clienteService.save(clienteExistente);
         return ResponseEntity.ok(actualizado);
     }
 
-    // ==== DELETE: Eliminar ====
+    @GetMapping("/perfil")
+    public ResponseEntity<Cliente> obtenerPerfil(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername(); // viene del token JWT
+        Cliente cliente = clienteRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con el email: " + email));
+        return ResponseEntity.ok(cliente);
+    }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<Cliente> cambiarEstado(@PathVariable Long id, @RequestParam boolean activo) {
+        Cliente cliente = clienteService.obtener(id);
+        cliente.setActivo(activo);
+        Cliente actualizado = clienteService.save(cliente);
+        return ResponseEntity.ok(actualizado);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.eliminar(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> eliminarCliente(@PathVariable Long id) {
+        try {
+            clienteService.eliminar(id);
+            return ResponseEntity.ok("Cliente eliminado");
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

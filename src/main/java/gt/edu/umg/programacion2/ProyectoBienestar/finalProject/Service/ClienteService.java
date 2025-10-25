@@ -5,9 +5,9 @@
 
 package gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Service;
 
-import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.cliente;
+import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Classes.Cliente;
 import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Event.ClienteCreadoEvent;
-import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository.IClienteRepository; // Usaremos esta como la interfaz de JpaRepository
+import gt.edu.umg.programacion2.ProyectoBienestar.finalProject.Repository.IClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +23,6 @@ import java.util.Optional;
 @Service
 public class ClienteService {
 
-    // 1. Uso de la interfaz (IClienteRepository) en lugar de la clase de implementación
     private final IClienteRepository repo;
 
     private final ApplicationEventPublisher eventPublisher;
@@ -34,27 +33,31 @@ public class ClienteService {
         this.eventPublisher = eventPublisher;
     }
 
+    @Autowired
+    IClienteRepository clienteRepository;
 
+    public boolean existsByEmail(String email) {
+        return clienteRepository.existsByEmail(email);
+    }
 
-    public cliente guardarCliente(cliente cliente1) {
+    public Cliente save(Cliente cliente) {
+        return clienteRepository.save(cliente);
+    }
 
-        // Determinar la acción para el log (asumiendo que si tiene ID es UPDATE)
+    public Cliente guardarCliente(Cliente cliente1) {
+
         String accion = (cliente1.getId() == null) ? "CREADO" : "ACTUALIZADO";
 
-        // 1. Guardar o actualizar el cliente en la base de datos
-        cliente clienteGuardado = repo.save(cliente1);
+        Cliente clienteGuardado = repo.save(cliente1);
 
-        // 2. Obtener el nombre del usuario autenticado (Placeholder de Seguridad)
         String usuarioActual;
         try {
-            // Esto solo funciona si ya tienes Spring Security configurado y el usuario logueado
             usuarioActual = SecurityContextHolder.getContext().getAuthentication().getName();
         } catch (Exception e) {
-            // Fallback si no hay contexto de seguridad (ej: pruebas o primera vez)
+            // Fallback
             usuarioActual = "SYSTEM";
         }
 
-        // 3. Publicar el evento de auditoría
         ClienteCreadoEvent evento = new ClienteCreadoEvent(
                 this, // Fuente del evento
                 clienteGuardado,
@@ -65,65 +68,54 @@ public class ClienteService {
         return clienteGuardado;
     }
 
-    // Método para obtener todos
-    public List<cliente> obtenerTodos() {
-        // Uso correcto de la variable de instancia 'repo'
+    public List<Cliente> obtenerTodos() {
         return repo.findAll();
     }
 
-    // Método para obtener por ID
-    public Optional<cliente> obtenerPorId(Long id) {
-        // Uso correcto de la variable de instancia 'repo'
+    public Optional<Cliente> obtenerPorId(Long id) {
         return repo.findById(id);
     }
 
-    // --- MÉTODOS CRUD ANTIGUOS/PERSONALIZADOS (Refactorizados a JPA) ---
-
-    // Método 'crear' refactorizado para usar la entidad Cliente y el Repositorio
-    public cliente crear(String nit, String nombreCompleto, String email, String telefono) {
-        // **IMPORTANTE:** En lugar de buscar en memoria, buscamos usando un método del Repositorio.
-        // Asumiendo que has añadido: 'Optional<cliente> findByEmail(String email);' en IClienteRepository
+    // MÉTODOS CRUD
+    public Cliente crear(String nit, String nombreCompleto, String email, String telefono, String password, boolean activo) {
         if (repo.findByEmail(email).isPresent()) {
             throw new RuntimeException("El email ya está registrado");
         }
 
-        // 3. Crear una nueva instancia del cliente (Necesitarás un constructor adecuado)
-        cliente nuevoCliente = new cliente(nit, nombreCompleto, email, telefono);
+        Cliente nuevoCliente = new Cliente(nit, nombreCompleto, email, telefono, password, true);
         return repo.save(nuevoCliente);
     }
 
-    // Método 'listar' (Ahora es el mismo que obtenerTodos)
-    public List<cliente> listar() {
+    public List<Cliente> listar() {
         return repo.findAll();
     }
 
-    // Método 'obtener' (Buscar por ID con manejo de excepciones)
-    public cliente obtener(Long id) {
-        // 4. Se usa .orElseThrow() para manejar el Optional de forma moderna
+    public Cliente obtener(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente con ID " + id + " no encontrado"));
     }
 
     // Método 'actualizar'
-    public cliente actualizar(Long id, cliente clienteActualizado) {
-        // 1. Busca el cliente existente. El método 'obtener' maneja la excepción si no existe.
-        cliente clienteExistente = obtener(id);
+    public Cliente actualizar(Long id, Cliente clienteActualizado) {
+        Cliente clienteExistente = obtener(id);
 
-        // 2. Actualización de campos
-        // Se actualizan los campos con los valores del objeto clienteActualizado
         clienteExistente.setNit(clienteActualizado.getNit());
 
         clienteExistente.setNombreCompleto(clienteActualizado.getNombreCompleto());
         clienteExistente.setEmail(clienteActualizado.getEmail());
         clienteExistente.setTelefono(clienteActualizado.getTelefono());
 
-        // 3. Guarda el cliente modificado.
         return repo.save(clienteExistente);
     }
 
-    // Método 'eliminar'
     public void eliminar(Long id) {
         // 7. Usar el método 'deleteById' de JpaRepository
         repo.deleteById(id);
+    }
+
+    public Cliente desactivarCliente(Long id) {
+        Cliente cliente = obtener(id);
+        cliente.setActivo(false);
+        return repo.save(cliente);
     }
 }

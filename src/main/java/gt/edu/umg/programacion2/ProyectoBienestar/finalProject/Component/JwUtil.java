@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwUtil {
     // Clave secreta para firmar el token
-    private String secret = "tu_clave_secreta_aqui";
+    private String secret = "0973";
 
     // 1. Genera un token JWT a partir de los detalles del usuario
     public String generateToken(UserDetails userDetails) {
