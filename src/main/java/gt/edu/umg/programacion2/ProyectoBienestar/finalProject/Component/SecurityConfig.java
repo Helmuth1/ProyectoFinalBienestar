@@ -24,28 +24,18 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter; // Tu filtro JWT (si lo tienes)
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable()) // Desactiva CSRF
+                .cors(cors -> cors.disable()) // O usa tu CorsConfig si ya lo tienes
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/servicios/**").permitAll()
-                        .requestMatchers("/api/citas/**").permitAll()
-                        .requestMatchers("/api/facturas/**").permitAll()
-                        .requestMatchers("/api/clientes/**").permitAll()
-                        .requestMatchers("/api/reportes/**").permitAll()
                         .anyRequest().permitAll()
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                );
 
         return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
